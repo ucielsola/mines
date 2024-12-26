@@ -11,6 +11,7 @@ export class Game {
     private _revealedCells: number = $state(0);
     private _flaggedCells: number = $state(0);
     private _status: GameStatus = $state(GameStatus.PAUSED);
+    private _isFirstClick: boolean = true;
 
     constructor(size: number = Game.DEFAULT_SIZE, mines: number = Game.DEFAULT_MINES) {
         this._size = size;
@@ -56,13 +57,26 @@ export class Game {
             return;
         }
 
+        if (cell.isMine) {
+            if (!this._isFirstClick) {
+                this._status = GameStatus.LOST;
+            } else {
+                this._isFirstClick = false;
+                cell.updateMineState(false);
+
+                const adjacentCells = this.getAdjacentCells(cell.position);
+                const mines = adjacentCells.filter(c => c.isMine).length;
+
+                cell.updateAdjacentMineCount(mines)
+
+                this.moveMine();
+            }
+        }
+
         cell.reveal();
 
         this._revealedCells++;
 
-        if (cell.isMine) {
-            this._status = GameStatus.LOST;
-        }
 
         if (userTriggered || cell.adjacentMines === 0 || this._status === GameStatus.LOST) {
             this.revealAdjacentCells(cell.position, userTriggered)
@@ -119,5 +133,12 @@ export class Game {
             }
             return adjacent;
         }, [] as Cell[]);
+    }
+
+    private moveMine() {
+        const firstFreeCell = this._board.flat().find(cell => !cell.isMine);
+        if (firstFreeCell) {
+            firstFreeCell.updateMineState(true)
+        }
     }
 }

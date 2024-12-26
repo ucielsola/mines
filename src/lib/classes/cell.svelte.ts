@@ -33,6 +33,14 @@ export class Cell {
         return this._adjacentMines;
     }
 
+    public updateMineState(isMine: boolean): void {
+        this._isMine = isMine;
+    }
+
+    public updateAdjacentMineCount(newCount: number): void {
+        this._adjacentMines = newCount;
+    }
+
     public toggleFlag(): void {
         this._flagged = !this._flagged;
     }
@@ -62,7 +70,6 @@ export class Cell {
             textClasses.push(adjacentTextColorClasses[this.adjacentMines])
             containerClasses.push('bg-cell-revealed')
         }
-
 
         return `
     <div class="${containerClasses.join(" ")}">
