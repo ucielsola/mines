@@ -74,6 +74,8 @@ export class Game {
     }
 
     public toggleFlagCell(cell: Cell): void {
+        if (cell.revealed) return;
+
         if (cell.flagged) {
             this._flaggedCells--;
         } else {

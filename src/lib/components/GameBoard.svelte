@@ -11,7 +11,10 @@
 	{@const { revealed, flagged, position, adjacentMines } = cell}
 
 	<button
-		class="flex items-center justify-center overflow-hidden border border-foreground-300"
+		class="flex items-center justify-center overflow-hidden border border-foreground-300 transition-all {revealed &&
+		adjacentMines === 0
+			? ''
+			: 'hover:border-foreground-500'}"
 		style={`height: ${cellSize}px; width: ${cellSize}px; max-height: 5rem; max-width: 5rem;`}
 		class:rounded-tl-xl={!position.row && !position.col}
 		class:rounded-tr-xl={!position.row && position.col === game.size - 1}
