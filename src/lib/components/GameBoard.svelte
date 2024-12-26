@@ -3,13 +3,16 @@
 	import { Game, type Cell } from '$lib/classes';
 
 	let { game }: { game: Game } = $props();
+
+	let cellSize = $derived(document?.body?.clientWidth / game.size - 4);
 </script>
 
 {#snippet GameCell(cell: Cell)}
 	{@const { revealed, flagged, position, adjacentMines } = cell}
 
 	<button
-		class="flex h-20 w-20 items-center justify-center overflow-hidden border border-foreground-300"
+		class="flex items-center justify-center overflow-hidden border border-foreground-300"
+		style={`height: ${cellSize}px; width: ${cellSize}px; max-height: 5rem; max-width: 5rem;`}
 		class:rounded-tl-xl={!position.row && !position.col}
 		class:rounded-tr-xl={!position.row && position.col === game.size - 1}
 		class:rounded-bl-xl={position.row === game.size - 1 && !position.col}
