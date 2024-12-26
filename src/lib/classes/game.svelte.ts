@@ -136,15 +136,17 @@ export class Game {
     }
 
     private moveMine(originalPosition: CellPosition): void {
-        const firstFreeCell = this._board.flat().find(cell => !cell.isMine && (cell.position.col !== originalPosition.col && cell.position.row !== originalPosition.row)) as Cell;
+        const newMineCell = this._board.flat().find(cell => !cell.isMine && (cell.position.col !== originalPosition.col && cell.position.row !== originalPosition.row)) as Cell;
 
-        firstFreeCell.updateMineState(true);
+        newMineCell.updateMineState(true);
 
-        this.updateCellsMineCount();
+        const adjacentsToNewMineCell = this.getAdjacentCells(newMineCell.position);
+
+        this.updateCellsMineCount(adjacentsToNewMineCell);
     }
 
-    private updateCellsMineCount() {
-        this.board.flat().forEach(cell => {
+    private updateCellsMineCount(cells: Cell[]) {
+        cells.forEach(cell => {
             const adjacentCells = this.getAdjacentCells(cell.position);
             const mines = adjacentCells.filter(c => c.isMine).length;
             cell.updateAdjacentMineCount(mines);
