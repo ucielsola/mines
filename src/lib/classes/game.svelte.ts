@@ -69,7 +69,7 @@ export class Game {
 
                 cell.updateAdjacentMineCount(mines)
 
-                this.moveMine();
+                this.moveMine(cell.position);
             }
         }
 
@@ -135,10 +135,19 @@ export class Game {
         }, [] as Cell[]);
     }
 
-    private moveMine() {
-        const firstFreeCell = this._board.flat().find(cell => !cell.isMine);
-        if (firstFreeCell) {
-            firstFreeCell.updateMineState(true)
-        }
+    private moveMine(originalPosition: CellPosition): void {
+        const firstFreeCell = this._board.flat().find(cell => !cell.isMine && (cell.position.col !== originalPosition.col && cell.position.row !== originalPosition.row)) as Cell;
+
+        firstFreeCell.updateMineState(true);
+
+        this.updateCellsMineCount();
+    }
+
+    private updateCellsMineCount() {
+        this.board.flat().forEach(cell => {
+            const adjacentCells = this.getAdjacentCells(cell.position);
+            const mines = adjacentCells.filter(c => c.isMine).length;
+            cell.updateAdjacentMineCount(mines);
+        })
     }
 }
